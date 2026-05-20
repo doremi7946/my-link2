@@ -1,0 +1,21 @@
+# 작업 목록 (Tasks)
+
+- [x] 계획 및 태스크 설계
+  - [x] 계획서 작성 (`implementation_plan.md`)
+  - [x] 작업 목록 작성 (`task.md`)
+  - [x] 진행 상황 작성 (`walkthrough.md`)
+- [x] Firestore 서비스 확장 (`lib/firestore-service.ts`)
+  - [x] `fetchProfileByDisplayName` 함수 정의 (displayname 및 handle 교차 중복 검색 지원)
+- [x] 공개 프로필 페이지 구현 (`app/[displayName]/page.tsx`)
+  - [x] 동적 파라미터 `@` 접두사 제거 로직 구현
+  - [x] React Query `useQuery` 기반의 유저 프로필 및 링크 리스트 조회 연동
+  - [x] 로딩 상태 및 404 예외 처리 (`notFound()`) 구현
+  - [x] 비로그인 방문자용 읽기 전용 UI 마크업 제작
+  - [x] 다크 모드, 라이트 모드 전환 기능 연동
+- [x] 커스텀 404 에러 페이지 구현 (`app/not-found.tsx`)
+  - [x] 트렌디한 네오브루탈리즘/모던 스타일의 404 UI 제작
+- [x] 관리 페이지 연동 및 네비게이션 개선 (`app/links/page.tsx`)
+  - [x] 상단 헤더 영역에 "내 페이지" 바로가기 아이콘/버튼 추가
+  - [x] 아바타 드롭다운 메뉴 내에 "내 페이지 보기" 항목 추가
+- [x] 로컬 빌드 및 정적 타입 검증
+  - [x] `npm run build` (또는 `npm.cmd run build`) 명령어 실행을 통한 빌드 무결성 검증

@@ -1,0 +1,12 @@
+feat: 링크 관리 대시보드를 루트 경로(/)로 이동 및 Firebase 보안 규칙 추가
+
+- app/links/page.tsx -> app/page.tsx 로 이동 (localhost/links -> localhost/)
+- 기존 포트폴리오 홈 페이지(app/page.tsx) 삭제
+- app/links/ 디렉토리 제거
+- firestore.rules 신규 추가:
+  - users/{userId} 프로필 문서: 누구나 읽기, 본인만 쓰기
+  - users/{userId}/links/{linkId} 링크 문서: 누구나 읽기, 본인만 쓰기
+  - 각 문서에 필드 유효성 검사 함수 적용 (validateProfileFields, validateLinkFields)
+  - uid, createdAt 불변 필드 보호
+  - 그 외 모든 경로 기본 차단
+- 기존 미커밋 파일 일괄 스테이징 (동적 라우트, 프로필 편집, 컴포넌트 등)

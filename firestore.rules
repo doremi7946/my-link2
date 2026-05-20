@@ -1,0 +1,107 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─────────────────────────────────────────────
+    // 공통 헬퍼 함수
+    // ─────────────────────────────────────────────
+
+    // 로그인 여부 확인
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // 본인 여부 확인 (요청한 uid와 문서 경로의 userId가 일치하는지)
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // 문자열 필드 검증 (필수, 최대 길이)
+    function isValidString(field, maxLen) {
+      return field is string && field.size() > 0 && field.size() <= maxLen;
+    }
+
+    // URL 형식 기본 검증
+    function isValidUrl(url) {
+      return url is string && url.size() > 0 && url.size() <= 2048
+        && (url.matches('https?://.*'));
+    }
+
+    // ─────────────────────────────────────────────
+    // users/{userId} — 프로필 문서
+    // ─────────────────────────────────────────────
+    match /users/{userId} {
+
+      // 읽기: 누구나 가능 (공개 프로필 페이지 지원)
+      allow read: if true;
+
+      // 생성: 로그인 + 본인 ID 일치
+      allow create: if isOwner(userId)
+        && request.resource.data.keys().hasAll([])   // 필수 필드 없음 (첫 소셜 로그인 시 빈 문서도 허용)
+        && validateProfileFields(request.resource.data);
+
+      // 수정: 로그인 + 본인 ID 일치 + 허용된 필드만 변경 가능
+      allow update: if isOwner(userId)
+        && validateProfileFields(request.resource.data)
+        // uid 필드는 변경 불가
+        && !('uid' in request.resource.data.diff(resource.data).affectedKeys());
+
+      // 삭제: 본인만 가능
+      allow delete: if isOwner(userId);
+    }
+
+    // 프로필 필드 유효성 검사 함수
+    function validateProfileFields(data) {
+      // displayname: 선택, 최대 50자
+      return (!('displayname' in data) || isValidString(data.displayname, 50))
+        // handle: 선택, 최대 30자, 영문·숫자·밑줄·하이픈만 허용
+        && (!('handle' in data) || (isValidString(data.handle, 30) && data.handle.matches('[a-z0-9_\\-]+')))
+        // bio: 선택, 최대 200자
+        && (!('bio' in data) || (data.bio is string && data.bio.size() <= 200))
+        // photoURL: 선택, URL 형식
+        && (!('photoURL' in data) || isValidUrl(data.photoURL));
+    }
+
+    // ─────────────────────────────────────────────
+    // users/{userId}/links/{linkId} — 링크 문서
+    // ─────────────────────────────────────────────
+    match /users/{userId}/links/{linkId} {
+
+      // 읽기: 누구나 가능 (공개 링크 페이지 지원)
+      allow read: if true;
+
+      // 생성: 로그인 + 본인 ID 일치 + 필드 유효성 검사
+      allow create: if isOwner(userId)
+        && validateLinkFields(request.resource.data);
+
+      // 수정: 로그인 + 본인 ID 일치 + 필드 유효성 검사
+      allow update: if isOwner(userId)
+        && validateLinkFields(request.resource.data)
+        // createdAt은 변경 불가
+        && (
+          !('createdAt' in request.resource.data.diff(resource.data).affectedKeys())
+        );
+
+      // 삭제: 본인만 가능
+      allow delete: if isOwner(userId);
+    }
+
+    // 링크 필드 유효성 검사 함수
+    function validateLinkFields(data) {
+      // title: 필수, 최대 100자
+      return isValidString(data.title, 100)
+        // url: 필수, URL 형식
+        && isValidUrl(data.url)
+        // icon: 선택, URL 형식 (favicon)
+        && (!('icon' in data) || data.icon == null || isValidUrl(data.icon));
+    }
+
+    // ─────────────────────────────────────────────
+    // 그 외 모든 경로: 기본 차단
+    // ─────────────────────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
