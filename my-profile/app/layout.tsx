@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://mylink-dev.vercel.app"),
+  metadataBase: new URL("https://my-link2-three.vercel.app"),
   title: {
     default: "MyLink - 나만의 링크 모음 서비스",
     template: "%s | MyLink",
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "ko_KR",
-    url: "https://mylink-dev.vercel.app",
+    url: "https://my-link2-three.vercel.app",
     title: "MyLink - 나만의 링크 모음 서비스",
     description: "인스타그램, 유튜브, 블로그 등 흩어져 있는 나의 모든 프로필 링크를 한 곳에 깔끔하게 모아 공유해 보세요.",
     siteName: "MyLink",

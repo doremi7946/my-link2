@@ -36,22 +36,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     openGraph: {
       title,
       description,
-      images: [
-        {
-          url: photoURL,
-          width: 400,
-          height: 400,
-          alt: `${userProfile.displayname ?? targetName} 프로필 사진`,
-        },
-      ],
       type: "profile",
       username: userProfile.handle ?? targetName,
     },
     twitter: {
-      card: "summary",
+      card: "summary_large_image",
       title,
       description,
-      images: [photoURL],
     },
   };
 }

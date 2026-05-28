@@ -204,7 +204,6 @@ export default async function Image({ params }: PageProps) {
                   objectFit: "cover",
                   border: "6px solid #0f172a",
                   position: "relative",
-                  zIndex: 2,
                 }}
               />
             ) : (
@@ -223,7 +222,6 @@ export default async function Image({ params }: PageProps) {
                   fontWeight: 800,
                   color: "#3b82f6",
                   position: "relative",
-                  zIndex: 2,
                 }}
               >
                 {userProfile.displayname
