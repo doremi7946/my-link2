@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { fetchProfileByDisplayName } from "@/lib/firestore-service";
 import ProfileClient from "./ProfileClient";
@@ -7,6 +8,54 @@ interface PageProps {
     displayName: string;
   }>;
 }
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { displayName } = await params;
+  
+  // @ 기호 제거 및 URL 디코딩 처리
+  const decodedName = decodeURIComponent(displayName);
+  const targetName = decodedName.startsWith("@")
+    ? decodedName.slice(1)
+    : decodedName;
+
+  const userProfile = await fetchProfileByDisplayName(targetName);
+
+  if (!userProfile) {
+    return {
+      title: "사용자를 찾을 수 없습니다 | MyLink",
+    };
+  }
+
+  const title = `${userProfile.displayname ?? targetName} (@${userProfile.handle ?? targetName}) | MyLink`;
+  const description = userProfile.bio || `${userProfile.displayname ?? targetName}님의 모든 소셜 미디어 및 링크 정보입니다.`;
+  const photoURL = userProfile.photoURL || "/avatar.png";
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      images: [
+        {
+          url: photoURL,
+          width: 400,
+          height: 400,
+          alt: `${userProfile.displayname ?? targetName} 프로필 사진`,
+        },
+      ],
+      type: "profile",
+      username: userProfile.handle ?? targetName,
+    },
+    twitter: {
+      card: "summary",
+      title,
+      description,
+      images: [photoURL],
+    },
+  };
+}
+
 
 export default async function UserProfilePage({ params }: PageProps) {
   const { displayName } = await params;

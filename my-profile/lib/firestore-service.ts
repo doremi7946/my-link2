@@ -167,3 +167,22 @@ export async function incrementLinkClick(uid: string, linkId: string) {
   });
 }
 
+// 11. 모든 유저 목록 조회 (사이트맵용)
+export async function fetchAllUserHandles(): Promise<string[]> {
+  try {
+    const querySnapshot = await getDocs(collection(db, "users"));
+    const handles: string[] = [];
+    querySnapshot.forEach((docSnap) => {
+      const data = docSnap.data();
+      if (data.handle) {
+        handles.push(data.handle);
+      }
+    });
+    return handles;
+  } catch (error) {
+    console.error("Error fetching all user handles:", error);
+    return [];
+  }
+}
+
+
