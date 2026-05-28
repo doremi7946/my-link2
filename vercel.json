@@ -1,5 +1,1 @@
-{
-  "installCommand": "npm install --prefix my-profile",
-  "buildCommand": "npm run build --prefix my-profile",
-  "outputDirectory": "my-profile/.next"
-}
+{}
