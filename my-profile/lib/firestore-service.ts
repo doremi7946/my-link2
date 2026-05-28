@@ -10,7 +10,8 @@ import {
   query, 
   where, 
   orderBy, 
-  serverTimestamp 
+  serverTimestamp,
+  increment
 } from "firebase/firestore";
 import { db } from "./firebase";
 
@@ -19,6 +20,7 @@ export interface Link {
   title: string;
   url: string;
   icon?: string;
+  clicks?: number;
   createdAt?: any;
   updatedAt?: any;
 }
@@ -155,5 +157,13 @@ export async function fetchProfileByDisplayName(displayName: string) {
   }
   
   return null;
+}
+
+// 10. 링크 클릭 카운트 증가
+export async function incrementLinkClick(uid: string, linkId: string) {
+  const linkRef = doc(db, "users", uid, "links", linkId);
+  return await updateDoc(linkRef, {
+    clicks: increment(1),
+  });
 }
 

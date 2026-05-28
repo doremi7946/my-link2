@@ -1,6 +1,6 @@
 "use client";
-
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -8,7 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Plus, Loader2, Pencil, Trash2, Check, X, LogIn, LogOut, Lock, Sun, Moon, Palette, Copy, QrCode, ExternalLink } from "lucide-react";
+import { Plus, Loader2, Pencil, Trash2, Check, X, LogIn, LogOut, Lock, Sun, Moon, Palette, Copy, QrCode, ExternalLink, MousePointerClick, BarChart } from "lucide-react";
 import { auth, googleProvider } from "@/lib/firebase";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { 
@@ -608,9 +608,9 @@ export default function LinksPage() {
       
       {/* 헤더 */}
       <header className={`w-full border-b ${isDarkMode ? 'bg-slate-900/50 border-slate-800' : 'bg-white/50 border-slate-200'} backdrop-blur-md flex justify-between items-center p-4 lg:px-8 z-20 sticky top-0 transition-colors duration-300`}>
-        <div className="text-xl font-bold tracking-tight flex items-center gap-2">
+        <Link href="/" className="text-xl font-bold tracking-tight flex items-center gap-2 hover:opacity-80 transition-opacity">
           MyLink<span className="text-blue-500">.</span>
-        </div>
+        </Link>
         <div className="flex items-center gap-4">
           
           {/* 내 페이지 바로가기 링크 */}
@@ -647,6 +647,15 @@ export default function LinksPage() {
               >
                 <ExternalLink className="mr-3 h-4 w-4" />
                 내 페이지 보기
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={() => {
+                  window.location.href = "/stats";
+                }} 
+                className="font-medium cursor-pointer py-2 focus:bg-slate-100 dark:focus:bg-slate-800 rounded-md"
+              >
+                <BarChart className="mr-3 h-4 w-4" />
+                통계 보기
               </DropdownMenuItem>
               <DropdownMenuItem 
                 onClick={() => {
@@ -1001,6 +1010,12 @@ export default function LinksPage() {
                       <span className={`font-medium text-[15px] text-center px-16 truncate ${isDarkMode ? 'text-slate-100' : 'text-slate-800'}`}>
                         {link.title}
                       </span>
+
+                      {/* 클릭 카운트 표시 (Hover 시 액션 버튼과 겹치지 않도록 숨김 처리) */}
+                      <div className={`absolute right-6 flex items-center gap-1.5 text-[13px] font-medium transition-opacity duration-200 group-hover:opacity-0 ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
+                        <MousePointerClick className="w-3.5 h-3.5 opacity-70" />
+                        <span>{(link.clicks || 0).toLocaleString()}</span>
+                      </div>
                     </a>
                     
                     {/* 액션 버튼 영역 */}

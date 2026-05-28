@@ -75,12 +75,16 @@ service cloud.firestore {
       allow create: if isOwner(userId)
         && validateLinkFields(request.resource.data);
 
-      // 수정: 로그인 + 본인 ID 일치 + 필드 유효성 검사
-      allow update: if isOwner(userId)
+      // 수정: 로그인 + 본인 ID 일치 + 필드 유효성 검사 (본인 수정)
+      // 또는: 누구나 가능하되 오직 'clicks' 필드만 1 증가 (클릭수 추적)
+      allow update: if (isOwner(userId)
         && validateLinkFields(request.resource.data)
         // createdAt은 변경 불가
         && (
           !('createdAt' in request.resource.data.diff(resource.data).affectedKeys())
+        )) || (
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['clicks'])
+          && request.resource.data.clicks is number
         );
 
       // 삭제: 본인만 가능

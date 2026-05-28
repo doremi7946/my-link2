@@ -2,8 +2,8 @@
 
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { fetchLinks } from "@/lib/firestore-service";
-import { Loader2, Sun, Moon, Share2, ExternalLink } from "lucide-react";
+import { fetchLinks, incrementLinkClick } from "@/lib/firestore-service";
+import { Loader2, Sun, Moon, Share2, ExternalLink, MousePointerClick } from "lucide-react";
 import { toast } from "sonner";
 
 interface UserProfile {
@@ -20,6 +20,7 @@ interface ProfileClientProps {
 
 export default function ProfileClient({ userProfile }: ProfileClientProps) {
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
   // 유저 UID로 링크 목록 조회
   const { data: links = [], isLoading: isLinksLoading } = useQuery({
@@ -93,12 +94,10 @@ export default function ProfileClient({ userProfile }: ProfileClientProps) {
             } transition-transform duration-300 group-hover:scale-105`}
           >
             <img
-              src={userProfile.photoURL || "/avatar.png"}
+              src={imgError || !userProfile.photoURL ? "/avatar.png" : userProfile.photoURL}
               alt={`${userProfile.displayname ?? "유저"}의 프로필 사진`}
               className="w-full h-full object-cover"
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = "/avatar.png";
-              }}
+              onError={() => setImgError(true)}
             />
           </div>
         </div>
@@ -154,6 +153,9 @@ export default function ProfileClient({ userProfile }: ProfileClientProps) {
                 href={link.url}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => {
+                  incrementLinkClick(userProfile.uid, link.id).catch(console.error);
+                }}
                 className={`group relative w-full h-16 rounded-2xl border flex items-center justify-between px-5 shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 overflow-hidden ${
                   isDarkMode
                     ? "bg-slate-900 border-slate-800/80 hover:border-slate-700/80 hover:bg-slate-900/80"
@@ -200,14 +202,16 @@ export default function ProfileClient({ userProfile }: ProfileClientProps) {
                 </div>
 
                 {/* 우측 아이콘 */}
-                <div
-                  className={`p-2 rounded-xl transition-colors shrink-0 ${
-                    isDarkMode
-                      ? "bg-slate-950/40 text-slate-500 group-hover:text-slate-300"
-                      : "bg-slate-50/60 text-slate-400 group-hover:text-slate-600"
-                  }`}
-                >
-                  <ExternalLink className="h-4 w-4" />
+                <div className="flex items-center gap-3 shrink-0">
+                  <div
+                    className={`p-2 rounded-xl transition-colors ${
+                      isDarkMode
+                        ? "bg-slate-950/40 text-slate-500 group-hover:text-slate-300"
+                        : "bg-slate-50/60 text-slate-400 group-hover:text-slate-600"
+                    }`}
+                  >
+                    <ExternalLink className="h-4 w-4" />
+                  </div>
                 </div>
               </a>
             ))
