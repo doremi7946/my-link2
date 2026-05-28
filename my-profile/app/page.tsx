@@ -571,35 +571,7 @@ export default function LinksPage() {
 
   // 비로그인 상태 화면
   if (!currentUser) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-slate-50">
-        <div className="z-10 bg-white border border-slate-200 rounded-2xl p-8 sm:p-12 max-w-md w-full text-center shadow-lg">
-          <div className="w-16 h-16 bg-slate-100 rounded-2xl mx-auto flex items-center justify-center mb-6">
-            <LogIn className="w-8 h-8 text-slate-600" />
-          </div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 mb-2">
-            My Link
-          </h1>
-          <p className="text-slate-500 mb-8">
-            로그인 후 나만의 링크 포트폴리오를 만들어보세요!<br/>
-            모든 링크를 한 곳에 모아 공유할 수 있습니다.
-          </p>
-
-          <Button 
-            onClick={loginWithGoogle}
-            className="w-full bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 h-12 font-medium rounded-xl shadow-sm transition-all flex items-center justify-center gap-3"
-          >
-            <img src="https://www.google.com/favicon.ico" alt="Google" className="w-5 h-5" />
-            구글 계정으로 계속하기
-          </Button>
-
-          <div className="mt-6 text-xs text-slate-400 flex items-center justify-center gap-1">
-            <Lock className="w-3 h-3" />
-            안전하게 로그인됩니다.
-          </div>
-        </div>
-      </div>
-    );
+    return <LandingPage onLogin={loginWithGoogle} />;
   }
 
   // 로그인 상태 화면
@@ -1249,3 +1221,228 @@ export default function LinksPage() {
     </div>
   );
 }
+
+// 디자인 통일성을 지닌 인터랙티브 & 반응형 랜딩 페이지 컴포넌트
+function LandingPage({ onLogin }: { onLogin: () => void }) {
+  const [mockLinks, setMockLinks] = useState([
+    { id: 1, title: "✨ 내 포트폴리오 구경하기", clicks: 142, icon: "https://www.google.com/s2/favicons?domain=github.com&sz=128" },
+    { id: 2, title: "📺 유튜브 채널 구독", clicks: 88, icon: "https://www.google.com/s2/favicons?domain=youtube.com&sz=128" },
+    { id: 3, title: "✍️ 일상 블로그 이웃추가", clicks: 47, icon: "https://www.google.com/s2/favicons?domain=tistory.com&sz=128" },
+  ]);
+
+  const handleMockClick = (id: number, e: React.MouseEvent) => {
+    e.preventDefault();
+    setMockLinks(prev => prev.map(link => 
+      link.id === id ? { ...link, clicks: link.clicks + 1 } : link
+    ));
+    toast.success("클릭 수가 증가했습니다! (데모 시뮬레이션)");
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 font-sans transition-colors duration-300 relative overflow-x-hidden">
+      
+      {/* 헤더 (로그인 후의 헤더와 디자인 통일성 유지) */}
+      <header className="w-full border-b bg-white/50 border-slate-200 backdrop-blur-md flex justify-between items-center p-4 lg:px-8 z-20 sticky top-0">
+        <Link href="/" className="text-xl font-bold tracking-tight flex items-center gap-2 hover:opacity-80 transition-opacity">
+          MyLink<span className="text-blue-500">.</span>
+        </Link>
+        <Button 
+          onClick={onLogin}
+          className="bg-slate-900 text-white hover:bg-slate-800 rounded-lg h-9 text-sm px-4 font-medium transition-all shadow-sm flex items-center gap-2"
+        >
+          <LogIn className="w-4 h-4" />
+          로그인
+        </Button>
+      </header>
+
+      {/* 히어로 + 인터랙티브 목업 영역 */}
+      <main className="flex-1 flex flex-col items-center justify-center py-16 px-6 lg:px-8 max-w-6xl w-full mx-auto gap-12 lg:gap-8 lg:flex-row">
+        
+        {/* 좌측: 히어로 소개 문구 */}
+        <div className="flex-1 flex flex-col text-center lg:text-left items-center lg:items-start gap-6 max-w-xl">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-blue-200 bg-blue-50 text-blue-700 text-xs font-semibold tracking-wide">
+            <span className="flex h-2 w-2 rounded-full bg-blue-500 animate-pulse"></span>
+            모든 링크를 프로필 한 곳에
+          </div>
+          <h1 className="text-4xl sm:text-5xl font-black tracking-tight leading-[1.1] text-slate-900">
+            나를 표현하는 <br className="hidden sm:inline" />
+            가장 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-500">완벽한 한 페이지</span>
+          </h1>
+          <p className="text-slate-500 text-base sm:text-lg max-w-md lg:max-w-none leading-relaxed">
+            여러 개의 링크를 하나로 묶어 깔끔하게 공유해보세요. 
+            디자인 커스터마이징, 실시간 클릭 통계, QR 코드 공유까지 마이링크에서 모두 무료로 시작할 수 있습니다.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto mt-2">
+            <Button 
+              onClick={onLogin}
+              className="bg-slate-900 text-white hover:bg-slate-800 h-14 rounded-xl shadow-md transition-all font-semibold text-base px-8 flex items-center justify-center gap-3 hover:-translate-y-0.5 duration-200"
+            >
+              <img src="https://www.google.com/favicon.ico" alt="Google" className="w-5 h-5" />
+              구글로 3초 만에 시작하기
+            </Button>
+          </div>
+        </div>
+
+        {/* 우측: 인터랙티브 모바일 시뮬레이터 (로그인 후 대시보드 화면 및 내 페이지와 통일된 디자인) */}
+        <div className="flex-1 flex justify-center items-center max-w-sm w-full relative group">
+          {/* 장식용 후면 글로우 */}
+          <div className="absolute inset-0 bg-gradient-to-tr from-blue-500/10 to-cyan-500/10 rounded-[40px] blur-3xl -z-10 group-hover:scale-105 transition-transform duration-500"></div>
+          
+          {/* 피지컬 폰 프레임 디자인 */}
+          <div className="w-full bg-slate-950 p-3.5 rounded-[44px] shadow-2xl border-4 border-slate-900 relative overflow-hidden ring-1 ring-slate-800">
+            {/* 노치 데코 */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-slate-950 rounded-b-2xl z-30 flex items-center justify-center">
+              <span className="w-12 h-1 bg-slate-800/80 rounded-full"></span>
+            </div>
+            
+            {/* 내부 가상 스크린 */}
+            <div className="w-full bg-slate-50 rounded-[32px] overflow-hidden aspect-[9/18] flex flex-col relative z-20 select-none">
+              
+              {/* 가상 헤더 */}
+              <div className="h-12 border-b bg-white/80 border-slate-200 backdrop-blur-sm flex justify-between items-center px-6 pt-4">
+                <span className="text-xs font-bold tracking-tight text-slate-800">MyLink.</span>
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-blue-50 text-blue-600 border border-blue-100">PREVIEW</span>
+              </div>
+              
+              {/* 가상 프로필 정보 */}
+              <div className="flex flex-col items-center mt-6 gap-3 px-6">
+                <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-slate-200 bg-white shadow-sm">
+                  <img src="/avatar.png" alt="Demo Avatar" className="w-full h-full object-cover" />
+                </div>
+                <div className="flex flex-col items-center">
+                  <h2 className="text-base font-bold text-slate-900 tracking-tight">홍길동 (Gildong)</h2>
+                  <p className="text-[11px] font-medium text-slate-500 mt-0.5">@gildong_link</p>
+                  <p className="text-xs text-slate-600 text-center font-normal mt-2 line-clamp-2 px-2 bg-slate-100/50 py-1.5 rounded-lg border border-slate-200/50">
+                    안녕하세요! 이곳은 저를 표현하는 가상 링크 페이지입니다. 직접 클릭해보세요! 😉
+                  </p>
+                </div>
+              </div>
+
+              {/* 가상 링크 리스트 */}
+              <div className="flex-1 px-4 py-6 flex flex-col gap-2.5 overflow-y-auto">
+                {mockLinks.map((link) => (
+                  <div 
+                    key={link.id}
+                    onClick={(e) => handleMockClick(link.id, e)}
+                    className="relative border rounded-xl shadow-xs hover:shadow-sm bg-white border-slate-200 hover:border-slate-300 transition-all duration-200 overflow-hidden cursor-pointer active:scale-98 active:bg-slate-50"
+                  >
+                    <div className="flex items-center h-12 w-full px-4 justify-between relative">
+                      <div className="flex items-center gap-3">
+                        <div className="w-7 h-7 flex items-center justify-center border rounded-full overflow-hidden bg-slate-50 border-slate-200">
+                          <img src={link.icon} alt="icon" className="w-4 h-4 object-contain" />
+                        </div>
+                        <span className="font-semibold text-xs text-slate-800">{link.title}</span>
+                      </div>
+                      
+                      {/* 마우스 포인터 + 클릭수 */}
+                      <div className="flex items-center gap-1 text-[11px] font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200/60">
+                        <MousePointerClick className="w-3 h-3 opacity-75 text-blue-500 animate-pulse" />
+                        <span>{link.clicks}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+            </div>
+          </div>
+        </div>
+
+      </main>
+
+      {/* 3대 핵심 강점 소개 (통계 페이지/대시보드의 카드 스타일과 통일성 유지) */}
+      <section className="bg-white border-t border-slate-200/60 py-16 px-6">
+        <div className="max-w-5xl mx-auto w-full flex flex-col gap-10">
+          <div className="text-center">
+            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 mb-2">
+              마이링크만의 강력한 기능들
+            </h2>
+            <p className="text-slate-500 text-sm sm:text-base">
+              더 쉽고 완성도 높은 개인 포트폴리오를 만들어보세요.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            {/* 카드 1 - 실시간 통계 */}
+            <Card className="border-slate-200/60 shadow-xs hover:shadow-md transition-all duration-300 overflow-hidden bg-gradient-to-br from-white to-slate-50/50">
+              <CardContent className="p-6 flex flex-col items-start gap-4">
+                <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center shadow-inner">
+                  <BarChart className="w-5 h-5 text-blue-600" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-slate-900 mb-1.5 text-base">실시간 통계 분석</h3>
+                  <p className="text-slate-500 text-xs sm:text-sm leading-relaxed">
+                    대시보드에서 등록된 모든 링크의 총 누적 클릭 수, 평균 클릭 수 및 개별 반응률을 직관적인 차트로 한눈에 파악하세요.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* 카드 2 - 테마 배경 변경 */}
+            <Card className="border-slate-200/60 shadow-xs hover:shadow-md transition-all duration-300 overflow-hidden bg-gradient-to-br from-white to-slate-50/50">
+              <CardContent className="p-6 flex flex-col items-start gap-4">
+                <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center shadow-inner">
+                  <Palette className="w-5 h-5 text-purple-600" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-slate-900 mb-1.5 text-base">감성적인 컬러 테마</h3>
+                  <p className="text-slate-500 text-xs sm:text-sm leading-relaxed">
+                    버튼 클릭 한 번으로 분위기가 바뀌는 다양한 파스텔 톤 테마와 시력 보호를 위한 완성도 높은 다크 모드를 즉시 제공합니다.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* 카드 3 - QR 코드 자동 생성 */}
+            <Card className="border-slate-200/60 shadow-xs hover:shadow-md transition-all duration-300 overflow-hidden bg-gradient-to-br from-white to-slate-50/50">
+              <CardContent className="p-6 flex flex-col items-start gap-4">
+                <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center shadow-inner">
+                  <QrCode className="w-5 h-5 text-emerald-600" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-slate-900 mb-1.5 text-base">QR 코드 & 간편 복사</h3>
+                  <p className="text-slate-500 text-xs sm:text-sm leading-relaxed">
+                    나만의 프로필로 이어지는 고화질 QR 코드 생성 및 간편 복사 기능을 통해 오프라인 명함이나 소셜 미디어 프로필에 빠르게 추가해 보세요.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+          </div>
+        </div>
+      </section>
+
+      {/* 하단 푸터 / CTA 영역 */}
+      <section className="bg-slate-900 border-t border-slate-800 text-white py-16 px-6">
+        <div className="max-w-xl mx-auto text-center flex flex-col items-center gap-6">
+          <h2 className="text-2xl sm:text-3xl font-black tracking-tight leading-tight">
+            지금 무료로 시작하고 <br />
+            나만의 프로필 페이지를 완성해보세요
+          </h2>
+          <p className="text-slate-400 text-sm max-w-sm leading-relaxed">
+            어떠한 추가 결제나 구독 요금도 없습니다. 구글 로그인 한 번으로 무제한 링크 관리 혜택을 누리세요.
+          </p>
+          <Button 
+            onClick={onLogin}
+            className="bg-white text-slate-900 hover:bg-slate-100 h-14 rounded-xl shadow-lg transition-all font-semibold text-base px-8 flex items-center justify-center gap-3 w-full sm:w-auto hover:-translate-y-0.5 duration-200 mt-2"
+          >
+            <img src="https://www.google.com/favicon.ico" alt="Google" className="w-5 h-5" />
+            구글 계정으로 지금 무료 가입
+          </Button>
+          <div className="text-[11px] text-slate-500 flex items-center gap-1.5 mt-2">
+            <Lock className="w-3.5 h-3.5" />
+            안전한 소셜 인증이 적용됩니다.
+          </div>
+        </div>
+      </section>
+
+      {/* 저작권 */}
+      <footer className="w-full py-6 text-center text-xs text-slate-400 border-t border-slate-200 bg-slate-50">
+        © 2026 MyLink. All rights reserved.
+      </footer>
+
+    </div>
+  );
+}
+
