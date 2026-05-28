@@ -1299,7 +1299,7 @@ function LandingPage({ onLogin }: { onLogin: () => void }) {
             <div className="w-full bg-slate-50 rounded-[32px] overflow-hidden aspect-[9/18] flex flex-col relative z-20 select-none">
               
               {/* 가상 헤더 */}
-              <div className="h-12 border-b bg-white/80 border-slate-200 backdrop-blur-sm flex justify-between items-center px-6 pt-4">
+              <div className="h-12 border-b bg-white/80 border-slate-200 backdrop-blur-sm flex justify-between items-center px-6 pt-4 rounded-t-[32px]">
                 <span className="text-xs font-bold tracking-tight text-slate-800">MyLink.</span>
                 <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-blue-50 text-blue-600 border border-blue-100">PREVIEW</span>
               </div>
